@@ -3,7 +3,6 @@ module squaremicroservices
 go 1.22.2
 
 require (
-	github.com/google/uuid v1.6.0
 	github.com/longvu727/FootballSquaresLibs v0.0.0-20240625230829-1c5f97705c20
 	github.com/stretchr/testify v1.9.0
 )
