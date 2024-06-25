@@ -6,7 +6,8 @@ import (
 	"log"
 	"net/http"
 	"squaremicroservices/app"
-	"squaremicroservices/db"
+
+	"github.com/longvu727/FootballSquaresLibs/DB/db"
 )
 
 type Handler = func(writer http.ResponseWriter, request *http.Request)
@@ -40,8 +41,7 @@ func createFootballSquareGame(writer http.ResponseWriter, request *http.Request,
 
 	if err != nil {
 		writer.WriteHeader(http.StatusInternalServerError)
-		createSquareResponse.GameGUID = ""
-		createSquareResponse.ErrorMessage = `Unable to create square`
+		createSquareResponse.ErrorMessage = `Unable to create FootballSquareGame`
 		writer.Write(createSquareResponse.ToJson())
 		return
 	}
@@ -55,12 +55,11 @@ func getFootballSquareGame(writer http.ResponseWriter, request *http.Request, db
 
 	writer.Header().Set("Content-Type", "application/json")
 
-	getSquareResponse, err := app.GetDBSquare(ctx, request, dbConnect)
+	getSquareResponse, err := app.GetFootballSquareGame(ctx, request, dbConnect)
 
 	if err != nil {
 		writer.WriteHeader(http.StatusInternalServerError)
-		getSquareResponse.SquareGUID = ""
-		getSquareResponse.ErrorMessage = `Unable to get square`
+		getSquareResponse.ErrorMessage = `Unable to get FootballSquareGame`
 		writer.Write(getSquareResponse.ToJson())
 		return
 	}
