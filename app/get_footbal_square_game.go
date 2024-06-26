@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"net/http"
 
@@ -9,7 +10,16 @@ import (
 )
 
 type GetFootballSquareGameParams struct {
-	FootballSquaresGameIDs int32 `json:"football_square_game_id"`
+	FootballSquaresGameID int32 `json:"football_square_game_id"`
+}
+
+type GetFootballSquareGamesResponse struct {
+	FootballSquareGames []GetFootballSquareGameElement `json:"square"`
+	ErrorMessage        string                         `json:"error_message"`
+}
+
+type GetFootballSquareGameByGameIDParams struct {
+	GameID int32 `json:"game_id"`
 }
 
 type GetFootballSquareGameResponse struct {
@@ -33,12 +43,17 @@ func (response GetFootballSquareGameResponse) ToJson() []byte {
 	return jsonStr
 }
 
+func (response GetFootballSquareGamesResponse) ToJson() []byte {
+	jsonStr, _ := json.Marshal(response)
+	return jsonStr
+}
+
 func GetFootballSquareGame(ctx context.Context, request *http.Request, dbConnect *db.MySQL) (*GetFootballSquareGameResponse, error) {
 	var getFootballSquareGameResponse GetFootballSquareGameResponse
 	var getFootballSquareGameParams GetFootballSquareGameParams
 	json.NewDecoder(request.Body).Decode(&getFootballSquareGameParams)
 
-	footballGameRow, err := dbConnect.QUERIES.GetFootballSquareGame(ctx, getFootballSquareGameParams.FootballSquaresGameIDs)
+	footballGameRow, err := dbConnect.QUERIES.GetFootballSquareGame(ctx, getFootballSquareGameParams.FootballSquaresGameID)
 	if err != nil {
 		return &getFootballSquareGameResponse, err
 	}
@@ -53,4 +68,37 @@ func GetFootballSquareGame(ctx context.Context, request *http.Request, dbConnect
 	getFootballSquareGameResponse.GameID = int(footballGameRow.GameID.Int32)
 
 	return &getFootballSquareGameResponse, nil
+}
+
+func GetFootballSquareGameByGameID(ctx context.Context, request *http.Request, dbConnect *db.MySQL) (*GetFootballSquareGamesResponse, error) {
+	var getFootballSquareGamesResponse GetFootballSquareGamesResponse
+	var getFootballSquareGameByGameIDParams GetFootballSquareGameByGameIDParams
+	json.NewDecoder(request.Body).Decode(&getFootballSquareGameByGameIDParams)
+
+	footballGameRows, err := dbConnect.QUERIES.GetFootballSquareGameByGameID(
+		ctx,
+		sql.NullInt32{
+			Int32: getFootballSquareGameByGameIDParams.GameID,
+			Valid: true,
+		},
+	)
+	if err != nil {
+		return &getFootballSquareGamesResponse, err
+	}
+
+	for _, footballGameRow := range footballGameRows {
+		getFootballSquareGameElement := GetFootballSquareGameElement{
+			FootballSquaresGameID: int(footballGameRow.FootballSquareGameID),
+			ColumnIndex:           int(footballGameRow.ColumnIndex.Int32),
+			RowIndex:              int(footballGameRow.RowIndex.Int32),
+			WinnerQuaterNumber:    int(footballGameRow.WinnerQuarterNumber.Int16),
+			Winner:                footballGameRow.Winner.Bool,
+			UserID:                int(footballGameRow.UserID.Int32),
+			SquareID:              int(footballGameRow.SquareID.Int32),
+			GameID:                int(footballGameRow.GameID.Int32),
+		}
+		getFootballSquareGamesResponse.FootballSquareGames =
+			append(getFootballSquareGamesResponse.FootballSquareGames, getFootballSquareGameElement)
+	}
+	return &getFootballSquareGamesResponse, nil
 }
