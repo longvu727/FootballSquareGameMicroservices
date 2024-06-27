@@ -30,7 +30,7 @@ func Register(db *db.MySQL, ctx context.Context) {
 	http.HandleFunc(http.MethodPost+" /GetFootballSquareGameByGameID", func(w http.ResponseWriter, r *http.Request) {
 		GetFootballSquareGameByGameID(w, r, db, ctx)
 	})
-	
+
 }
 
 func home(writer http.ResponseWriter, _ *http.Request) {
@@ -86,6 +86,8 @@ func GetFootballSquareGameByGameID(writer http.ResponseWriter, request *http.Req
 		writer.Write(getSquareResponse.ToJson())
 		return
 	}
+
+	log.Print(string(getSquareResponse.ToJson()))
 
 	writer.WriteHeader(http.StatusOK)
 	writer.Write(getSquareResponse.ToJson())
