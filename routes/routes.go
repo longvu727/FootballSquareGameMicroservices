@@ -87,8 +87,6 @@ func GetFootballSquareGameByGameID(writer http.ResponseWriter, request *http.Req
 		return
 	}
 
-	log.Print(string(getSquareResponse.ToJson()))
-
 	writer.WriteHeader(http.StatusOK)
 	writer.Write(getSquareResponse.ToJson())
 }
