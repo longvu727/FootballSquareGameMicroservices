@@ -15,7 +15,7 @@ type GetFootballSquareGameParams struct {
 }
 
 type GetFootballSquareGamesResponse struct {
-	FootballSquareGames footballsquaregameservices.FootballSquares `json:"football_square"`
+	FootballSquareGames footballsquaregameservices.FootballSquares `json:"football_squares"`
 	ErrorMessage        string                                     `json:"error_message"`
 }
 
