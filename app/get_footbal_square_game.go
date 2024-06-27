@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/longvu727/FootballSquaresLibs/DB/db"
-	footballsquaregameservices "github.com/longvu727/FootballSquaresLibs/services/football_square_game_microservices"
+	footballsquaregamemicroservices "github.com/longvu727/FootballSquaresLibs/services/football_square_game_microservices"
 )
 
 type GetFootballSquareGameParams struct {
@@ -15,8 +15,8 @@ type GetFootballSquareGameParams struct {
 }
 
 type GetFootballSquareGamesResponse struct {
-	FootballSquareGames footballsquaregameservices.FootballSquares `json:"football_squares"`
-	ErrorMessage        string                                     `json:"error_message"`
+	FootballSquareGames footballsquaregamemicroservices.FootballSquares `json:"football_squares"`
+	ErrorMessage        string                                          `json:"error_message"`
 }
 
 type GetFootballSquareGameByGameIDParams struct {
@@ -24,7 +24,7 @@ type GetFootballSquareGameByGameIDParams struct {
 }
 
 type GetFootballSquareGameResponse struct {
-	footballsquaregameservices.FootballSquareGameElement
+	footballsquaregamemicroservices.FootballSquareGameElement
 	ErrorMessage string `json:"error_message"`
 }
 
@@ -77,7 +77,7 @@ func GetFootballSquareGameByGameID(ctx context.Context, request *http.Request, d
 	}
 
 	for _, footballGameRow := range footballGameRows {
-		getFootballSquareGameElement := footballsquaregameservices.FootballSquareGameElement{
+		getFootballSquareGameElement := footballsquaregamemicroservices.FootballSquareGameElement{
 			FootballSquaresGameID: int(footballGameRow.FootballSquareGameID),
 			ColumnIndex:           int(footballGameRow.ColumnIndex.Int32),
 			RowIndex:              int(footballGameRow.RowIndex.Int32),
