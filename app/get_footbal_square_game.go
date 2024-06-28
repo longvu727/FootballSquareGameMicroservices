@@ -15,8 +15,8 @@ type GetFootballSquareGameParams struct {
 }
 
 type GetFootballSquareGamesResponse struct {
-	FootballSquareGames footballsquaregamemicroservices.FootballSquares `json:"football_squares"`
-	ErrorMessage        string                                          `json:"error_message"`
+	FootballSquareGames []footballsquaregamemicroservices.FootballSquareGameElement `json:"football_squares"`
+	ErrorMessage        string                                                      `json:"error_message"`
 }
 
 type GetFootballSquareGameByGameIDParams struct {
@@ -86,6 +86,8 @@ func GetFootballSquareGameByGameID(ctx context.Context, request *http.Request, d
 			UserID:                int(footballGameRow.UserID.Int32),
 			SquareID:              int(footballGameRow.SquareID.Int32),
 			GameID:                int(footballGameRow.GameID.Int32),
+			UserName:              footballGameRow.UserName.String,
+			UserAlias:             footballGameRow.Alias.String,
 		}
 		getFootballSquareGamesResponse.FootballSquareGames =
 			append(getFootballSquareGamesResponse.FootballSquareGames, getFootballSquareGameElement)
