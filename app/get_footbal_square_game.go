@@ -1,13 +1,11 @@
 package app
 
 import (
-	"context"
 	"database/sql"
 	"encoding/json"
-	"net/http"
 
-	"github.com/longvu727/FootballSquaresLibs/DB/db"
 	footballsquaregamemicroservices "github.com/longvu727/FootballSquaresLibs/services/football_square_game_microservices"
+	"github.com/longvu727/FootballSquaresLibs/util/resources"
 )
 
 type GetFootballSquareGameParams struct {
@@ -38,12 +36,10 @@ func (response GetFootballSquareGamesResponse) ToJson() []byte {
 	return jsonStr
 }
 
-func GetFootballSquareGame(ctx context.Context, request *http.Request, dbConnect *db.MySQL) (*GetFootballSquareGameResponse, error) {
+func (footballSquareGameApp *FootballSquareGameApp) GetFootballSquareGame(getFootballSquareGameParams GetFootballSquareGameParams, resources *resources.Resources) (*GetFootballSquareGameResponse, error) {
 	var getFootballSquareGameResponse GetFootballSquareGameResponse
-	var getFootballSquareGameParams GetFootballSquareGameParams
-	json.NewDecoder(request.Body).Decode(&getFootballSquareGameParams)
 
-	footballGameRow, err := dbConnect.QUERIES.GetFootballSquareGame(ctx, getFootballSquareGameParams.FootballSquaresGameID)
+	footballGameRow, err := resources.DB.GetFootballSquareGame(resources.Context, getFootballSquareGameParams.FootballSquaresGameID)
 	if err != nil {
 		return &getFootballSquareGameResponse, err
 	}
@@ -60,13 +56,11 @@ func GetFootballSquareGame(ctx context.Context, request *http.Request, dbConnect
 	return &getFootballSquareGameResponse, nil
 }
 
-func GetFootballSquareGameByGameID(ctx context.Context, request *http.Request, dbConnect *db.MySQL) (*GetFootballSquareGamesResponse, error) {
+func (footballSquareGameApp *FootballSquareGameApp) GetFootballSquareGameByGameID(getFootballSquareGameByGameIDParams GetFootballSquareGameByGameIDParams, resources *resources.Resources) (*GetFootballSquareGamesResponse, error) {
 	var getFootballSquareGamesResponse GetFootballSquareGamesResponse
-	var getFootballSquareGameByGameIDParams GetFootballSquareGameByGameIDParams
-	json.NewDecoder(request.Body).Decode(&getFootballSquareGameByGameIDParams)
 
-	footballGameRows, err := dbConnect.QUERIES.GetFootballSquareGameByGameID(
-		ctx,
+	footballGameRows, err := resources.DB.GetFootballSquareGameByGameID(
+		resources.Context,
 		sql.NullInt32{
 			Int32: getFootballSquareGameByGameIDParams.GameID,
 			Valid: true,

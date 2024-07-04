@@ -1,12 +1,11 @@
 package app
 
 import (
-	"context"
 	"database/sql"
 	"encoding/json"
-	"net/http"
 
 	"github.com/longvu727/FootballSquaresLibs/DB/db"
+	"github.com/longvu727/FootballSquaresLibs/util/resources"
 )
 
 type CreateFootballSquareGameParams struct {
@@ -24,13 +23,14 @@ func (response CreateFootballSquareGameResponse) ToJson() []byte {
 	return jsonStr
 }
 
-func CreateDBFootballSquareGame(ctx context.Context, request *http.Request, dbConnect *db.MySQL) (*CreateFootballSquareGameResponse, error) {
-	var createFootballSquareGameParams CreateFootballSquareGameParams
-	json.NewDecoder(request.Body).Decode(&createFootballSquareGameParams)
-
+func (footballSquareGameApp *FootballSquareGameApp) CreateDBFootballSquareGame(createFootballSquareGameParams CreateFootballSquareGameParams, resources *resources.Resources) (*CreateFootballSquareGameResponse, error) {
 	var createFootballSquareGameResponse CreateFootballSquareGameResponse
 
-	footballSquareGameIDs, err := generateFootballSquareGame(ctx, createFootballSquareGameParams.SquareSize, dbConnect, createFootballSquareGameParams.GameID, createFootballSquareGameParams.SquareID)
+	footballSquareGameIDs, err := footballSquareGameApp.generateFootballSquareGame(
+		resources,
+		createFootballSquareGameParams.SquareSize,
+		createFootballSquareGameParams.GameID,
+		createFootballSquareGameParams.SquareID)
 	if err != nil {
 		return &createFootballSquareGameResponse, err
 	}
@@ -40,12 +40,12 @@ func CreateDBFootballSquareGame(ctx context.Context, request *http.Request, dbCo
 	return &createFootballSquareGameResponse, nil
 }
 
-func generateFootballSquareGame(ctx context.Context, squareSize int32, dbConnect *db.MySQL, gameID int32, squareID int32) ([]int64, error) {
+func (footballSquareGameApp *FootballSquareGameApp) generateFootballSquareGame(resources *resources.Resources, squareSize int32, gameID int32, squareID int32) ([]int64, error) {
 	var footballSquareGameIDs []int64
 
 	for row := 1; row <= int(squareSize); row++ {
 		for column := 1; column <= int(squareSize); column++ {
-			lastID, err := dbConnect.QUERIES.CreateFootballSquareGame(ctx, db.CreateFootballSquareGameParams{
+			lastID, err := resources.DB.CreateFootballSquareGame(resources.Context, db.CreateFootballSquareGameParams{
 				GameID:      sql.NullInt32{Int32: gameID, Valid: true},
 				SquareID:    sql.NullInt32{Int32: squareID, Valid: true},
 				RowIndex:    sql.NullInt32{Int32: int32(row), Valid: true},

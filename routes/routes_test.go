@@ -2,11 +2,15 @@ package routes
 
 import (
 	"bytes"
-	"fmt"
+	"footballsquaregamemicroservices/app"
+	mockfootballsquaregameapp "footballsquaregamemicroservices/app/mock"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	footballsquaregamemicroservices "github.com/longvu727/FootballSquaresLibs/services/football_square_game_microservices"
+
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -14,34 +18,145 @@ type RoutesTestSuite struct {
 	suite.Suite
 }
 
-func (suite *RoutesTestSuite) SetupTest() {}
+func (suite *RoutesTestSuite) TestCreateFootballSquareGame() {
 
-func (suite *RoutesTestSuite) TestCreateSquare() {
-	bytesObj := []byte(`{"side_length":10}`)
-	body := bytes.NewBuffer(bytesObj)
+	url := "/CreateFootballSquareGame"
+	ctrl := gomock.NewController(suite.T())
 
-	req, err := http.NewRequest(http.MethodPost, "/CreateSquare", body)
-	ctx := req.Context()
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer([]byte(`{"game_id": 123, "square_id": 345, "square_size": 10}`)))
+	suite.NoError(err)
 
-	if err != nil {
-		suite.Fail(err.Error())
+	httpRecorder := httptest.NewRecorder()
+
+	mockFootballSquareGame := mockfootballsquaregameapp.NewMockFootballSquareGame(ctrl)
+	mockFootballSquareGame.EXPECT().
+		CreateDBFootballSquareGame(gomock.Any(), gomock.Any()).
+		Times(1).
+		Return(&app.CreateFootballSquareGameResponse{FootballSquaresGameIDs: []int64{1, 2, 3, 4}}, nil)
+
+	routes := Routes{Apps: mockFootballSquareGame}
+	serveMux := routes.Register(nil)
+
+	handler, pattern := serveMux.Handler(req)
+	suite.Equal(http.MethodPost+" "+url, pattern)
+
+	handler.ServeHTTP(httpRecorder, req)
+
+	suite.Equal(httpRecorder.Code, http.StatusOK)
+}
+
+func (suite *RoutesTestSuite) TestGetFootballSquareGame() {
+
+	url := "/GetFootballSquareGame"
+	ctrl := gomock.NewController(suite.T())
+
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer([]byte(`{"football_square_game_id":10}`)))
+	suite.NoError(err)
+
+	httpRecorder := httptest.NewRecorder()
+
+	returnFootballSquareGame := &app.GetFootballSquareGameResponse{}
+	returnFootballSquareGame.FootballSquaresGameID = 10
+	returnFootballSquareGame.ColumnIndex = 1
+	returnFootballSquareGame.RowIndex = 1
+	returnFootballSquareGame.WinnerQuaterNumber = 0
+	returnFootballSquareGame.Winner = false
+	returnFootballSquareGame.UserID = 123
+	returnFootballSquareGame.SquareID = 321
+	returnFootballSquareGame.GameID = 234
+	returnFootballSquareGame.UserName = "LongUserName"
+	returnFootballSquareGame.UserAlias = "usr"
+
+	mockFootballSquareGame := mockfootballsquaregameapp.NewMockFootballSquareGame(ctrl)
+	mockFootballSquareGame.EXPECT().
+		GetFootballSquareGame(gomock.Any(), gomock.Any()).
+		Times(1).
+		Return(returnFootballSquareGame, nil)
+
+	routes := Routes{Apps: mockFootballSquareGame}
+	serveMux := routes.Register(nil)
+
+	handler, pattern := serveMux.Handler(req)
+	suite.Equal(http.MethodPost+" "+url, pattern)
+
+	handler.ServeHTTP(httpRecorder, req)
+
+	suite.Equal(httpRecorder.Code, http.StatusOK)
+}
+
+func (suite *RoutesTestSuite) TestGetFootballSquareGameByGameID() {
+
+	url := "/GetFootballSquareGameByGameID"
+	ctrl := gomock.NewController(suite.T())
+
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer([]byte(`{"game_id":10}`)))
+	suite.NoError(err)
+
+	httpRecorder := httptest.NewRecorder()
+
+	returnFootballSquareGames := &app.GetFootballSquareGamesResponse{
+		FootballSquareGames: []footballsquaregamemicroservices.FootballSquareGameElement{
+			{
+				FootballSquaresGameID: 10,
+				ColumnIndex:           1,
+				RowIndex:              1,
+				WinnerQuaterNumber:    0,
+				Winner:                false,
+				UserID:                123,
+				SquareID:              321,
+				GameID:                234,
+				UserName:              "LongUserName",
+				UserAlias:             "usr",
+			},
+			{
+				FootballSquaresGameID: 10,
+				ColumnIndex:           1,
+				RowIndex:              1,
+				WinnerQuaterNumber:    0,
+				Winner:                false,
+				UserID:                123,
+				SquareID:              321,
+				GameID:                234,
+				UserName:              "LongUserName",
+				UserAlias:             "usr",
+			},
+		},
 	}
-	// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
-	rr := httptest.NewRecorder()
 
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		createFootballSquareGame(w, r, nil, ctx)
-	})
-	handler.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusOK {
-		suite.Fail(fmt.Sprintf("handler returned wrong status code: got %d want %v", status, http.StatusOK))
-	}
+	mockFootballSquareGame := mockfootballsquaregameapp.NewMockFootballSquareGame(ctrl)
+	mockFootballSquareGame.EXPECT().
+		GetFootballSquareGameByGameID(gomock.Any(), gomock.Any()).
+		Times(1).
+		Return(returnFootballSquareGames, nil)
 
-	// Check the response body is what we expect.
-	expected := `CreateSquare Service Acknowledged`
-	if rr.Body.String() != expected {
-		suite.Fail(fmt.Sprintf("handler returned unexpected body: got %v want %v", rr.Body.String(), expected))
-	}
+	routes := Routes{Apps: mockFootballSquareGame}
+	serveMux := routes.Register(nil)
+
+	handler, pattern := serveMux.Handler(req)
+	suite.Equal(http.MethodPost+" "+url, pattern)
+
+	handler.ServeHTTP(httpRecorder, req)
+
+	suite.Equal(httpRecorder.Code, http.StatusOK)
+}
+
+func (suite *RoutesTestSuite) TestHome() {
+
+	url := "/"
+	req, err := http.NewRequest(http.MethodPost, url, nil)
+	suite.NoError(err)
+
+	httpRecorder := httptest.NewRecorder()
+
+	routes := NewRoutes()
+	serveMux := routes.Register(nil)
+
+	handler, pattern := serveMux.Handler(req)
+	suite.Equal(url, pattern)
+
+	handler.ServeHTTP(httpRecorder, req)
+
+	suite.Equal(httpRecorder.Code, http.StatusOK)
 }
 
 func TestRoutesTestSuite(t *testing.T) {
