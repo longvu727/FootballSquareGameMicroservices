@@ -79,3 +79,18 @@ func (mr *MockFootballSquareGameMockRecorder) GetFootballSquareGameByGameID(arg0
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFootballSquareGameByGameID", reflect.TypeOf((*MockFootballSquareGame)(nil).GetFootballSquareGameByGameID), arg0, arg1)
 }
+
+// ReserveFootballSquare mocks base method.
+func (m *MockFootballSquareGame) ReserveFootballSquare(arg0 app.ReserveFootballSquareParams, arg1 *resources.Resources) (*app.ReserveFootballSquareResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReserveFootballSquare", arg0, arg1)
+	ret0, _ := ret[0].(*app.ReserveFootballSquareResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ReserveFootballSquare indicates an expected call of ReserveFootballSquare.
+func (mr *MockFootballSquareGameMockRecorder) ReserveFootballSquare(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReserveFootballSquare", reflect.TypeOf((*MockFootballSquareGame)(nil).ReserveFootballSquare), arg0, arg1)
+}

@@ -3,7 +3,7 @@ module footballsquaregamemicroservices
 go 1.22.2
 
 require (
-	github.com/longvu727/FootballSquaresLibs v0.0.0-20240704205836-cc17138fe9bd
+	github.com/longvu727/FootballSquaresLibs v0.0.0-20240713020134-243e7a6c9ade
 	github.com/stretchr/testify v1.9.0
 )
 

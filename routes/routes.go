@@ -36,6 +36,7 @@ func (routes *Routes) Register(resources *resources.Resources) *http.ServeMux {
 		http.MethodPost + " /CreateFootballSquareGame":      routes.createFootballSquareGame,
 		http.MethodPost + " /GetFootballSquareGame":         routes.getFootballSquareGame,
 		http.MethodPost + " /GetFootballSquareGameByGameID": routes.getFootballSquareGameByGameID,
+		http.MethodPost + " /ReserveFootballSquare": routes.reserveFootballSquare,
 	}
 
 	for route, handler := range routesHandlersMap {
@@ -100,15 +101,35 @@ func (routes *Routes) getFootballSquareGameByGameID(writer http.ResponseWriter, 
 	var getFootballSquareGameByGameIDParams app.GetFootballSquareGameByGameIDParams
 	json.NewDecoder(request.Body).Decode(&getFootballSquareGameByGameIDParams)
 
-	getSquareResponse, err := routes.Apps.GetFootballSquareGameByGameID(getFootballSquareGameByGameIDParams, resources)
+	getFootballSquareResponse, err := routes.Apps.GetFootballSquareGameByGameID(getFootballSquareGameByGameIDParams, resources)
 
 	if err != nil {
 		writer.WriteHeader(http.StatusInternalServerError)
-		getSquareResponse.ErrorMessage = `Unable to get FootballSquareGame`
-		writer.Write(getSquareResponse.ToJson())
+		getFootballSquareResponse.ErrorMessage = `Unable to get FootballSquareGame`
+		writer.Write(getFootballSquareResponse.ToJson())
 		return
 	}
 
 	writer.WriteHeader(http.StatusOK)
-	writer.Write(getSquareResponse.ToJson())
+	writer.Write(getFootballSquareResponse.ToJson())
+}
+
+func (routes *Routes) reserveFootballSquare(writer http.ResponseWriter, request *http.Request, resources *resources.Resources) {
+	log.Printf("Received request for %s\n", request.URL.Path)
+
+	writer.Header().Set("Content-Type", "application/json")
+	var reserveFootballSquareParams app.ReserveFootballSquareParams
+	json.NewDecoder(request.Body).Decode(&reserveFootballSquareParams)
+
+	reserveFootballSquareResponse, err := routes.Apps.ReserveFootballSquare(reserveFootballSquareParams, resources)
+
+	if err != nil {
+		writer.WriteHeader(http.StatusInternalServerError)
+		reserveFootballSquareResponse.ErrorMessage = `Unable to get FootballSquareGame`
+		writer.Write(reserveFootballSquareResponse.ToJson())
+		return
+	}
+
+	writer.WriteHeader(http.StatusOK)
+	writer.Write(reserveFootballSquareResponse.ToJson())
 }
