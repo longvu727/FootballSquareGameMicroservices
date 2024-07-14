@@ -125,7 +125,7 @@ func (routes *Routes) reserveFootballSquare(writer http.ResponseWriter, request 
 
 	if err != nil {
 		writer.WriteHeader(http.StatusInternalServerError)
-		reserveFootballSquareResponse.ErrorMessage = `Unable to get FootballSquareGame`
+		reserveFootballSquareResponse.ErrorMessage = `Unable to reserve FootballSquareGame`
 		writer.Write(reserveFootballSquareResponse.ToJson())
 		return
 	}

@@ -9,10 +9,10 @@ import (
 )
 
 type ReserveFootballSquareParams struct {
-	UserID               int32 `json:"user_id"`
-	FootballSquareGameID int32 `json:"football_square_game_id"`
-	RowIndex             int32 `json:"row_index"`
-	ColumnIndex          int32 `json:"column_index"`
+	UserID      int32 `json:"user_id"`
+	GameID      int32 `json:"game_id"`
+	RowIndex    int32 `json:"row_index"`
+	ColumnIndex int32 `json:"column_index"`
 }
 
 type ReserveFootballSquareResponse struct {
@@ -31,10 +31,10 @@ func (footballSquareGameApp *FootballSquareGameApp) ReserveFootballSquare(reserv
 	err := resources.DB.ReserveFootballSquareByGameIDRowIndexColumnIndex(
 		resources.Context,
 		db.ReserveFootballSquareByGameIDRowIndexColumnIndexParams{
-			UserID:               sql.NullInt32{Int32: reserveFootballSquareParams.UserID, Valid: true},
-			FootballSquareGameID: reserveFootballSquareParams.FootballSquareGameID,
-			RowIndex:             sql.NullInt32{Int32: reserveFootballSquareParams.RowIndex, Valid: true},
-			ColumnIndex:          sql.NullInt32{Int32: reserveFootballSquareParams.ColumnIndex, Valid: true},
+			UserID:      sql.NullInt32{Int32: reserveFootballSquareParams.UserID, Valid: true},
+			GameID:      sql.NullInt32{Int32: reserveFootballSquareParams.GameID, Valid: true},
+			RowIndex:    sql.NullInt32{Int32: reserveFootballSquareParams.RowIndex, Valid: true},
+			ColumnIndex: sql.NullInt32{Int32: reserveFootballSquareParams.ColumnIndex, Valid: true},
 		},
 	)
 	if err != nil {
