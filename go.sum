@@ -26,6 +26,8 @@ github.com/longvu727/FootballSquaresLibs v0.0.0-20240713020134-243e7a6c9ade h1:F
 github.com/longvu727/FootballSquaresLibs v0.0.0-20240713020134-243e7a6c9ade/go.mod h1:4g7NGK9HCuQz0sBnSqpKImq6b5wFZetZmG9khQvYGDk=
 github.com/longvu727/FootballSquaresLibs v0.0.0-20240714193753-06f3ae1fbf9f h1:Qj05+7E9PDvwo3tu5Og/275a48u0x5Eq+dHyCYXvvqQ=
 github.com/longvu727/FootballSquaresLibs v0.0.0-20240714193753-06f3ae1fbf9f/go.mod h1:4g7NGK9HCuQz0sBnSqpKImq6b5wFZetZmG9khQvYGDk=
+github.com/longvu727/FootballSquaresLibs v0.0.0-20240715224657-549365a0568a h1:dnTB3yD2rkoVYZLwgpJNx4xIqzoqTwEswZvKuszVvT4=
+github.com/longvu727/FootballSquaresLibs v0.0.0-20240715224657-549365a0568a/go.mod h1:4g7NGK9HCuQz0sBnSqpKImq6b5wFZetZmG9khQvYGDk=
 github.com/magiconair/properties v1.8.7 h1:IeQXZAiQcpL9mgcAe1Nu6cX9LLw6ExEHKjN0VQdvPDY=
 github.com/magiconair/properties v1.8.7/go.mod h1:Dhd985XPs7jluiymwWYZ0G4Z61jb3vdS329zhj2hYo0=
 github.com/mitchellh/mapstructure v1.5.0 h1:jeMsZIYE/09sWLaz43PL7Gy6RuMjD2eJVyuac5Z2hdY=
