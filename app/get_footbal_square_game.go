@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 
-	footballsquaregamemicroservices "github.com/longvu727/FootballSquaresLibs/services/football_square_game_microservices"
+	"github.com/longvu727/FootballSquaresLibs/services"
 	"github.com/longvu727/FootballSquaresLibs/util/resources"
 )
 
@@ -13,8 +13,8 @@ type GetFootballSquareGameParams struct {
 }
 
 type GetFootballSquareGamesResponse struct {
-	FootballSquareGames []footballsquaregamemicroservices.FootballSquareGameElement `json:"football_squares"`
-	ErrorMessage        string                                                      `json:"error_message"`
+	FootballSquareGames []services.FootballSquareGameElement `json:"football_squares"`
+	ErrorMessage        string                               `json:"error_message"`
 }
 
 type GetFootballSquareGameByGameIDParams struct {
@@ -22,7 +22,7 @@ type GetFootballSquareGameByGameIDParams struct {
 }
 
 type GetFootballSquareGameResponse struct {
-	footballsquaregamemicroservices.FootballSquareGameElement
+	services.FootballSquareGameElement
 	ErrorMessage string `json:"error_message"`
 }
 
@@ -44,10 +44,10 @@ func (footballSquareGameApp *FootballSquareGameApp) GetFootballSquareGame(getFoo
 		return &getFootballSquareGameResponse, err
 	}
 
-	getFootballSquareGameResponse.FootballSquaresGameID = int(footballGameRow.FootballSquareGameID)
+	getFootballSquareGameResponse.FootballSquareGameID = int(footballGameRow.FootballSquareGameID)
 	getFootballSquareGameResponse.ColumnIndex = int(footballGameRow.ColumnIndex.Int32)
 	getFootballSquareGameResponse.RowIndex = int(footballGameRow.RowIndex.Int32)
-	getFootballSquareGameResponse.WinnerQuaterNumber = int(footballGameRow.WinnerQuarterNumber.Int16)
+	getFootballSquareGameResponse.WinnerQuarterNumber = int(footballGameRow.WinnerQuarterNumber.Int16)
 	getFootballSquareGameResponse.Winner = footballGameRow.Winner.Bool
 	getFootballSquareGameResponse.UserID = int(footballGameRow.UserID.Int32)
 	getFootballSquareGameResponse.SquareID = int(footballGameRow.SquareID.Int32)
@@ -71,17 +71,17 @@ func (footballSquareGameApp *FootballSquareGameApp) GetFootballSquareGameByGameI
 	}
 
 	for _, footballGameRow := range footballGameRows {
-		getFootballSquareGameElement := footballsquaregamemicroservices.FootballSquareGameElement{
-			FootballSquaresGameID: int(footballGameRow.FootballSquareGameID),
-			ColumnIndex:           int(footballGameRow.ColumnIndex.Int32),
-			RowIndex:              int(footballGameRow.RowIndex.Int32),
-			WinnerQuaterNumber:    int(footballGameRow.WinnerQuarterNumber.Int16),
-			Winner:                footballGameRow.Winner.Bool,
-			UserID:                int(footballGameRow.UserID.Int32),
-			SquareID:              int(footballGameRow.SquareID.Int32),
-			GameID:                int(footballGameRow.GameID.Int32),
-			UserName:              footballGameRow.UserName.String,
-			UserAlias:             footballGameRow.Alias.String,
+		getFootballSquareGameElement := services.FootballSquareGameElement{
+			FootballSquareGameID: int(footballGameRow.FootballSquareGameID),
+			ColumnIndex:          int(footballGameRow.ColumnIndex.Int32),
+			RowIndex:             int(footballGameRow.RowIndex.Int32),
+			WinnerQuarterNumber:   int(footballGameRow.WinnerQuarterNumber.Int16),
+			Winner:               footballGameRow.Winner.Bool,
+			UserID:               int(footballGameRow.UserID.Int32),
+			SquareID:             int(footballGameRow.SquareID.Int32),
+			GameID:               int(footballGameRow.GameID.Int32),
+			UserName:             footballGameRow.UserName.String,
+			UserAlias:            footballGameRow.Alias.String,
 		}
 		getFootballSquareGamesResponse.FootballSquareGames =
 			append(getFootballSquareGamesResponse.FootballSquareGames, getFootballSquareGameElement)

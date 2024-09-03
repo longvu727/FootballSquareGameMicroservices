@@ -2,9 +2,13 @@ module footballsquaregamemicroservices
 
 go 1.22.2
 
+require github.com/stretchr/testify v1.9.0
+
 require (
-	github.com/longvu727/FootballSquaresLibs v0.0.0-20240715224657-549365a0568a
-	github.com/stretchr/testify v1.9.0
+	github.com/cespare/xxhash/v2 v2.2.0 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
+	github.com/longvu727/FootballSquaresLibs v0.0.0-20240830222922-5b817199a18e // indirect
+	github.com/redis/go-redis/v9 v9.6.1 // indirect
 )
 
 require (
