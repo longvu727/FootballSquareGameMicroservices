@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"footballsquaregamemicroservices/app"
@@ -36,7 +37,7 @@ func (routes *Routes) Register(resources *resources.Resources) *http.ServeMux {
 		http.MethodPost + " /CreateFootballSquareGame":      routes.createFootballSquareGame,
 		http.MethodPost + " /GetFootballSquareGame":         routes.getFootballSquareGame,
 		http.MethodPost + " /GetFootballSquareGameByGameID": routes.getFootballSquareGameByGameID,
-		http.MethodPost + " /ReserveFootballSquare": routes.reserveFootballSquare,
+		http.MethodPost + " /ReserveFootballSquare":         routes.reserveFootballSquare,
 	}
 
 	for route, handler := range routesHandlersMap {
@@ -81,17 +82,19 @@ func (routes *Routes) getFootballSquareGame(writer http.ResponseWriter, request 
 	var getFootballSquareGameParams app.GetFootballSquareGameParams
 	json.NewDecoder(request.Body).Decode(&getFootballSquareGameParams)
 
-	getSquareResponse, err := routes.Apps.GetFootballSquareGame(getFootballSquareGameParams, resources)
+	getFootballSquareGameResponse, err := routes.Apps.GetFootballSquareGame(getFootballSquareGameParams, resources)
 
-	if err != nil {
+	if err != nil && err == sql.ErrNoRows {
+		getFootballSquareGameResponse.ErrorMessage = `FootballSquareGame not found`
+	} else if err != nil {
 		writer.WriteHeader(http.StatusInternalServerError)
-		getSquareResponse.ErrorMessage = `Unable to get FootballSquareGame`
-		writer.Write(getSquareResponse.ToJson())
+		getFootballSquareGameResponse.ErrorMessage = `Unable to get FootballSquareGame`
+		writer.Write(getFootballSquareGameResponse.ToJson())
 		return
 	}
 
 	writer.WriteHeader(http.StatusOK)
-	writer.Write(getSquareResponse.ToJson())
+	writer.Write(getFootballSquareGameResponse.ToJson())
 }
 
 func (routes *Routes) getFootballSquareGameByGameID(writer http.ResponseWriter, request *http.Request, resources *resources.Resources) {
@@ -103,7 +106,9 @@ func (routes *Routes) getFootballSquareGameByGameID(writer http.ResponseWriter, 
 
 	getFootballSquareResponse, err := routes.Apps.GetFootballSquareGameByGameID(getFootballSquareGameByGameIDParams, resources)
 
-	if err != nil {
+	if err != nil && err == sql.ErrNoRows {
+		getFootballSquareResponse.ErrorMessage = `FootballSquareGame not found`
+	} else if err != nil {
 		writer.WriteHeader(http.StatusInternalServerError)
 		getFootballSquareResponse.ErrorMessage = `Unable to get FootballSquareGame`
 		writer.Write(getFootballSquareResponse.ToJson())
@@ -123,7 +128,9 @@ func (routes *Routes) reserveFootballSquare(writer http.ResponseWriter, request 
 
 	reserveFootballSquareResponse, err := routes.Apps.ReserveFootballSquare(reserveFootballSquareParams, resources)
 
-	if err != nil {
+	if err != nil && err == sql.ErrNoRows {
+		reserveFootballSquareResponse.ErrorMessage = `guid not found`
+	} else if err != nil {
 		writer.WriteHeader(http.StatusInternalServerError)
 		reserveFootballSquareResponse.ErrorMessage = `Unable to reserve FootballSquareGame`
 		writer.Write(reserveFootballSquareResponse.ToJson())
